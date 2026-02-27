@@ -19,8 +19,15 @@ function NavBar() {
     const links = <>
         <li><NavLink to='/'>Home</NavLink></li>
         {
+          
           user && <>
           <li><NavLink to='/myApplication'>My Applications</NavLink></li>
+          </>
+        }
+
+        {
+          user && <>
+            <li><NavLink to="/addJob">Add Job</NavLink></li>
           </>
         }
     </>
