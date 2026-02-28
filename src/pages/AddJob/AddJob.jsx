@@ -1,10 +1,10 @@
 import React from "react";
 import useAuth from "../hooks/useAuth";
-
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const AddJob = () => {
-
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const handleAddAJob = (e) => {
     e.preventDefault();
@@ -14,26 +14,53 @@ const AddJob = () => {
     //console.log(data);
 
     // process salary range data
-    const {min, max, currency, ...newJob} = data;
-     newJob.salaryRange = {min, max, currency};
+    const { min, max, currency, ...newJob } = data;
+    newJob.salaryRange = { min, max, currency };
 
-     //process requirements
-     const requirementsString = newJob.requirements;
-     //console.log(requirementsString);
+    //process requirements
+    const requirementsString = newJob.requirements;
+    //console.log(requirementsString);
 
-     const requirementsDirty = requirementsString.split(',');
-     //console.log(requirementsDirty)
+    const requirementsDirty = requirementsString.split(",");
+    //console.log(requirementsDirty)
 
-     const requirementsClean = requirementsDirty.map(req => req.trim());
-     //console.log(requirementsClean);
-     newJob.requirements = requirementsClean;
+    const requirementsClean = requirementsDirty.map((req) => req.trim());
+    //console.log(requirementsClean);
+    newJob.requirements = requirementsClean;
 
-     // process responsibilities
-    newJob.responsibilities = newJob.responsibilities.split(',').map(res => res.trim());
+    // process responsibilities
+    newJob.responsibilities = newJob.responsibilities
+      .split(",")
+      .map((res) => res.trim());
 
-     newJob.status = "active";
+    newJob.status = "active";
 
-     console.log(newJob, Object.keys(newJob).length);
+    console.log(newJob);
+
+    // save job to the database
+    axios
+      .post('http://localhost:3000/jobs', newJob)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data.insertedId) {
+          Swal.fire({
+            title: "Your application has been submitted",
+            width: 600,
+            padding: "3em",
+            color: "#716add",
+            background: "#fff url(/images/trees.png)",
+            backdrop: `
+              rgba(0,0,123,0.4)
+              url("/images/nyan-cat.gif")
+              left top
+              no-repeat
+            `,
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 
   return (
@@ -88,21 +115,21 @@ const AddJob = () => {
                 type="radio"
                 name="jobType"
                 aria-label="On-Site"
-                value='On-Site'
+                value="On-Site"
               />
               <input
                 className="btn"
                 type="radio"
                 name="jobType"
                 aria-label="Remote"
-                value='Remote'
+                value="Remote"
               />
               <input
                 className="btn"
                 type="radio"
                 name="jobType"
                 aria-label="Hybrid"
-                value='Hybrid'
+                value="Hybrid"
               />
             </div>
           </fieldset>
