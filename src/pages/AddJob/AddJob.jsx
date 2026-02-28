@@ -241,7 +241,7 @@ const AddJob = () => {
             <label className="label">HR Email</label>
             <input
               type="email"
-              name="rh_email"
+              name="hr_email"
               className="input"
               placeholder="HR Email"
               defaultValue={user.email}
